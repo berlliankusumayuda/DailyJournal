@@ -96,16 +96,24 @@ include "koneksi.php";
             <h2 class="fw-bold display-6">Gallery</h2>
             <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    <div class="carousel-item active" data-bs-interval="10000">
-                        <img src="gambar/cubarsi.jpg" class="d-block w-100 img-fluid" alt="...">
+                <?php
+                $active = true;
+                $sql2 = "SELECT * FROM gallery ORDER BY tanggal DESC";
+                $hasil2 = $conn->query($sql2);
+
+                while($row = $hasil2->fetch_assoc()){
+                    ?>
+                    <div class="carousel-item<?= $active ? ' active' : '' ?>">
+                      <img src="gambar/<?= $row['gambar'] ?>" class="d-block mx-auto w-75" alt="<?= $row['judul'] ?>">
+                      <div class="carousel-caption d-none d-md-block">
+                        <h5><?= $row['judul'] ?></h5>
+                        <p><?= $row['tanggal'] ?></p>
+                      </div>
                     </div>
-                    <div class="carousel-item" data-bs-interval="2000">
-                        <img src="gambar/dejong.jpg" class="d-block w-100 img-fluid" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="gambar/gavi.jpg" class="d-block w-100 img-fluid" alt="...">
-                    </div>
-                </div>
+                  <?php
+                    $active = false;
+                }
+            ?>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>

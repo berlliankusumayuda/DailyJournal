@@ -28,6 +28,7 @@ if (!isset($_SESSION['username'])) {
     /> 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+    <!-- CSS Start -->
     <style>
         html, body {
             height: 100%;
@@ -44,10 +45,12 @@ if (!isset($_SESSION['username'])) {
             margin-top: auto;
         }
     </style>
+    <!-- CSS end -->
+     
 </head>
 <body>
     
-    <!-- nav begin -->
+    <!-- navbar begin -->
     <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top bg-danger-subtle">
     <div class="container">
         <a class="navbar-brand" href=".">My Daily Journal</a>
@@ -65,12 +68,14 @@ if (!isset($_SESSION['username'])) {
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-dark">
             <li class="nav-item"><a class="nav-link" href="admin.php?page=dashboard">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="admin.php?page=article">Article</a></li> 
+            <li class="nav-item"><a class="nav-link" href="admin.php?page=gallery">Gallery</a></li> 
+            <li class="nav-item"><a class="nav-link" href="admin.php?page=user">User</a></li> 
             <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-danger fw-bold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?= $_SESSION['username']?></a><ul class="dropdown-menu"><li><a class="dropdown-item" href="logout.php">Logout</a></li></ul></li> 
         </ul>
         </div>
     </div>
     </nav>
-    <!-- nav end -->
+    <!-- navbar end -->
 
      <!-- content begin -->
     <section id="content" class="p-5">
