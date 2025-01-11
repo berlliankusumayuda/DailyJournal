@@ -46,14 +46,14 @@ if (!isset($_SESSION['username'])) {
         }
     </style>
     <!-- CSS end -->
-     
+
 </head>
 <body>
     
     <!-- navbar begin -->
     <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top bg-danger-subtle">
     <div class="container">
-        <a class="navbar-brand" href=".">My Daily Journal</a>
+        <a class="navbar-brand" href=".">My <span class="text-dark">Daily Journal</span></a>
         <button
         class="navbar-toggler"
         type="button"
@@ -77,7 +77,7 @@ if (!isset($_SESSION['username'])) {
     </nav>
     <!-- navbar end -->
 
-     <!-- content begin -->
+    <!-- content begin -->
     <section id="content" class="p-5">
         <div class="container">
             <?php
@@ -104,7 +104,7 @@ if (!isset($_SESSION['username'])) {
         <a href="https://twitter.com/"><i class="bi bi-twitter h2 p-2 text-dark"></i></a>
         <a href="https://wa.me/+6285972531910"><i class="bi bi-whatsapp h2 p-2 text-dark"></i></a>
     </div>
-    <div>Berlian Kusumayuda &copy; 2024</div>
+    <div>Copyright &copy; 2025 Berlian Kusumayuda. All Rights Reserved</div>
     </footer>
     <!-- footer end -->
 

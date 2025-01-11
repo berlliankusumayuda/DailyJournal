@@ -11,43 +11,28 @@ if (isset($_SESSION['username'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $username = $_POST['username'];
+    $username = $_POST['username'];
+    $password = md5($_POST['password']); // menggunakan enkripsi md5
 
-  //menggunakan fungsi enkripsi md5 supaya sama dengan password yang tersimpan di database
-  $password = md5($_POST['password']);
+    // prepared statement
+    $stmt = $conn->prepare("SELECT username FROM user WHERE username=? AND password=?");
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $hasil = $stmt->get_result();
+    $row = $hasil->fetch_array(MYSQLI_ASSOC);
 
-  //prepared statement
-  $stmt = $conn->prepare("SELECT username 
-                          FROM user 
-                          WHERE username=? AND password=?");
+    if (!empty($row)) {
+        // jika data ditemukan, simpan username ke session
+        $_SESSION['username'] = $row['username'];
+        header("location:admin.php");
+    } else {
+        // jika login gagal, redirect dengan parameter error
+        header("location:login.php?error=true");
+    }
 
-  //parameter binding 
-  $stmt->bind_param("ss", $username, $password); //username string dan password string
-  
-  //database executes the statement
-  $stmt->execute();
-  
-  //menampung hasil eksekusi
-  $hasil = $stmt->get_result();
-  
-  //mengambil baris dari hasil sebagai array asosiatif
-  $row = $hasil->fetch_array(MYSQLI_ASSOC);
-
-  //check apakah ada baris hasil data user yang cocok
-  if (!empty($row)) {
-    //jika ada, simpan variable username pada session
-    $_SESSION['username'] = $row['username'];
-
-    //mengalihkan ke halaman admin
-    header("location:admin.php");
-  } else {
-    //jika tidak ada (gagal), alihkan kembali ke halaman login
-    header("location:login.php");
-  }
-
-  //menutup koneksi database
-  $stmt->close();
-  $conn->close();
+    // menutup koneksi
+    $stmt->close();
+    $conn->close();
 } else {
 ?>
 
@@ -56,144 +41,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login - Daily Journal</title>
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+    <title>Login Page</title>
+    <link rel="stylesheet" href="./style/style.css" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            background-color: #FFF0F5;
         }
-        .container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 150px;
-            height: 150px;
-            background-color: rgba(0, 123, 255, 0.2);
-            border-radius: 50%;
-            z-index: 0;
-        }
-        .container::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: -50px;
-            width: 150px;
-            height: 150px;
-            background-color: rgba(0, 123, 255, 0.2);
-            border-radius: 50%;
-            z-index: 0;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-            z-index: 1;
-            position: relative;
-        }
-        .input-group {
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-size: 14px;
-            position: relative;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            color: #333;
-            background-color: rgba(255, 255, 255, 0.9);
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #007bff;
-            background-color: #fff;
-        }
-        .btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            border: none;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-            z-index: 1;
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .text-center {
-            text-align: center;
-            margin-top: 20px;
-            z-index: 1;
-            position: relative;
-        }
-        .text-center a {
-            text-decoration: none;
-            color: #007bff;
-        }
-        .text-center a:hover {
-            color: #0056b3;
+        .login-card {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h2>Welcome to Daily Journal</h2>
-        <form action="login.php" method="POST">
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+<body class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card login-card shadow-lg p-4" style="width: 100%; max-width: 400px;">
+        <div class="text-center mb-4">
+            <h1 class="h4 mt-2">Login My Daily Journal</h1>
+        </div>
+        
+        <!-- Pesan Error -->
+        <?php if (isset($_GET['error']) && $_GET['error'] == 'true'): ?>
+            <div class="alert alert-danger text-center" role="alert">
+                Username atau Password salah!
             </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+        <?php endif; ?>
+        
+        <form action="login.php" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username :</label>
+                <input type="text" class="form-control" id="username" name="username" required>
             </div>
-            <button type="submit" class="btn">Login</button>
+            <div class="mb-3">
+                <label for="pass" class="form-label">Password :</label>
+                <input type="password" class="form-control" id="pass" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-lg">Login</button>
         </form>
-        <div class="text-center">
-            <p>Don't have an account? <a href="#">Sign up</a></p>
+        <div class="text-center mt-3">
+            <p class="mb-1">Belum punya akun? <a href="register.php" class="text-decoration-none">Daftar</a></p>
+            <p><a href="#" class="text-decoration-none text-muted">Lupa Password?</a></p>
         </div>
     </div>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

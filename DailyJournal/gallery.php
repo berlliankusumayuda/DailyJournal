@@ -90,10 +90,10 @@ if (isset($_POST['simpan'])) {
             unlink("img/" . $_POST['gambar_lama']);
         }
         $stmt = $conn->prepare("UPDATE gallery SET judul = ?, gambar = ?, tanggal = ? WHERE id = ?");
-        $stmt->bind_param("sssssi", $judul, $gambar, $tanggal, $id);
+        $stmt->bind_param("sssi", $judul, $gambar, $tanggal, $id);
     } else {
-        $stmt = $conn->prepare("INSERT INTO gallery (judul, deskripsi, gambar, tanggal, username) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $judul, $gambar, $tanggal);
+        $stmt = $conn->prepare("INSERT INTO gallery (judul, gambar, tanggal) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $judul, $gambar, $tanggal);
     }
 
     if ($stmt->execute()) {
