@@ -12,6 +12,7 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -55,6 +56,7 @@ INSERT INTO `article` (`id`, `judul`, `isi`, `gambar`, `tanggal`, `username`) VA
 --
 -- Table structure for table `gallery`
 --
+
 
 CREATE TABLE `gallery` (
   `id` int(11) NOT NULL,
